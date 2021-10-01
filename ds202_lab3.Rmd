@@ -1,0 +1,32 @@
+---
+title: "ds202_Lab3"
+author: "Kyle Quagliano"
+date: "9/28/2021"
+output: html_document
+---
+
+```{r}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+dat <- readxl::read_xls('GSS.xls')
+colnames(dat) <- c('GssYear', 'Id', 'MaritalStatus', 'SchoolCompleted', 'Sex', 'Affiliation', 'Happiness', 'Ballot')
+str(dat)
+dat$SchoolCompleted <- as.numeric(dat$SchoolCompleted)
+
+ms <- dat %>%
+    group_by(MaritalStatus) %>% summarize( 
+  mean_rate = mean(SchoolCompleted, na.rm=TRUE))
+ms
+"People who have lost a significant other are more likely to have completed less years of school."
+filtered <- dat %>% filter(SchoolCompleted > ms$mean_rate)
+filtered
+
+
+
+happy <-dat %>%
+  group_by(MaritalStatus) %>%  summarize(Happiness = n())
+happy
+
+ggplot(happy, aes(x=MaritalStatus)) + geom_bar()
+```
